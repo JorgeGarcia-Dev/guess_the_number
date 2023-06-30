@@ -44,7 +44,10 @@ def guess_the_number():
             print(f"The number is less than {player_number}.")
 
         else:
-            print(f"Congratulations,you guessed the number {secret_number} !!")
+            print(
+                "Congratulations,you guessed the number !!"
+                f"(The secret number was {secret_number})"
+            )
             break
 
     if loop > 5:
