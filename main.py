@@ -5,7 +5,7 @@ Create a game "Guess the number" with Python.
 import random
 
 
-def validate_type_and_range_level_of_dificultty(message):
+def validate_difficulty_integer_range(message):
     """
     This function validates the type and range of numbers.
 
@@ -16,31 +16,31 @@ def validate_type_and_range_level_of_dificultty(message):
     int: The validated number.
 
     Examples:
-    >>> validate_type_and_range_level_of_dificultty(
+    >>> validate_difficulty_integer_range(
         "Enter the level of difficulty: 1 = easy, 10 = hard: "
         )
     Enter the level of difficulty: 1 = easy, 10 = hard: 10
     10
 
-    >>> validate_type_and_range_level_of_dificultty(
+    >>> validate_difficulty_integer_range(
         "Enter the level of difficulty: 1 = easy, 10 = hard: "
         )
     Enter the level of difficulty: 1 = easy, 10 = hard: 5
     5
 
-    >>> validate_type_and_range_level_of_dificultty(
+    >>> validate_difficulty_integer_range(
         "Enter the level of difficulty: 1 = easy, 10 = hard: "
         )
     Enter the level of difficulty: 1 = easy, 10 = hard: "10"
     ValueError: invalid literal for int() with base 10: '10'
 
-    >>> validate_type_and_range_level_of_dificultty(
+    >>> validate_difficulty_integer_range(
         "Enter the level of difficulty: 1 = easy, 10 = hard: "
         )
     Enter the level of difficulty: 1 = easy, 10 = hard: diez
     ValueError: invalid literal for int() with base 10: 'diez'
 
-    >>> validate_type_and_range_level_of_dificultty(
+    >>> validate_difficulty_integer_range(
         "Enter the level of difficulty: 1 = easy, 10 = hard: "
         )
     Enter the level of difficulty: 1 = easy, 10 = hard: 20
@@ -60,7 +60,7 @@ def validate_type_and_range_level_of_dificultty(message):
             print(error)
 
 
-def validate_type_number(message: str) -> int:
+def validate_integer_type(message):
     """
     This function validates the type and range of numbers.
 
@@ -77,19 +77,19 @@ def validate_type_number(message: str) -> int:
     Enter a number: 10
     10
 
-    >>> validate_type_number(
+    >>> validate_integer_type(
         "Enter a number: "
         )
     Enter a number: 5
     5
 
-    >>> validate_type_number(
+    >>> validate_integer_type(
         "Enter a number: "
         )
     Enter a number: "10"
     ValueError: invalid literal for int() with base 10: '10'
 
-    >>> validate_type_number(
+    >>> validate_integer_type(
         "Enter a number: "
         )
     Enter a number: diez
@@ -122,8 +122,10 @@ def guess_the_number():
     message (str): The message to display to the user.
 
     Returns:
-    message (str): Response message depending on whether the number is higher or lower,
-    if the user has guessed the number, or if his chances have been exhausted.
+    message (str): Response message depending
+    on whether the number is higher or lower,
+    if the user has guessed the number,
+    or if his chances have been exhausted.
 
     Example:
     >>> guess_the_number()
@@ -140,29 +142,31 @@ def guess_the_number():
     """
     print("Welcome to the game 'Guess the number'... Are you ready?\n")
 
-    level_of_difficulty = validate_type_and_range_level_of_dificultty(
+    level_of_difficulty = validate_difficulty_integer_range(
         "the level of difficulty: 1 = easy, 10 = hard: "
     )
 
     selected_difficulty_level = int(f"{level_of_difficulty}0")
 
     print(
-        "You must find the secret number " f"between 1 & {selected_difficulty_level}."
+        "You must find the secret number "
+        f"between 1 & {selected_difficulty_level}."
     )
 
-    loop = 1
+    attempts = 1
+    max_attempts = 5
 
     secret_number = random.randint(1, selected_difficulty_level)
 
-    while loop <= 5:
-        player_number = validate_type_number("a number: ")
+    while attempts <= max_attempts:
+        player_number = validate_integer_type("a number: ")
 
         if secret_number > player_number:
-            loop += 1
+            attempts += 1
             print(f"The number is greater than {player_number}.")
 
         elif secret_number < player_number:
-            loop += 1
+            attempts += 1
             print(f"The number is less than {player_number}.")
 
         else:
@@ -172,7 +176,7 @@ def guess_the_number():
             )
             break
 
-    if loop > 5:
+    if attempts > 5:
         print(f"You lost !! The secret number was {secret_number}.")
 
 
