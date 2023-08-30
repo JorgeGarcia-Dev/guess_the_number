@@ -1,183 +1,66 @@
-"""
-Create a game "Guess the number" with Python.
-"""
-
 import random
 
+from utils.validate_integer_type import method_with_integer_validation
 
-def validate_difficulty_integer_range(message):
-    """
-    This function validates the type and range of numbers.
+from utils.validate_difficulty_range import method_with_difficulty_validation
 
-    Parameters:
-    message (str): The message to display to the user.
 
-    Returns:
-    int: The validated number.
+class GuessTheNumber:
+    def __init__(self, difficulty) -> None:
+        self.difficulty: int = difficulty
+        self.selected_difficulty_level: int = difficulty * 10
+        self.max_attempts: int = 5
+        self.secret_number: int = random.randint(1, self.selected_difficulty_level)
 
-    Examples:
-    >>> validate_difficulty_integer_range(
-        "Enter the level of difficulty: 1 = easy, 10 = hard: "
-        )
-    Enter the level of difficulty: 1 = easy, 10 = hard: 10
-    10
+    def play(self) -> None:
+        self.print_welcome_message()
+        self.print_instructions()
 
-    >>> validate_difficulty_integer_range(
-        "Enter the level of difficulty: 1 = easy, 10 = hard: "
-        )
-    Enter the level of difficulty: 1 = easy, 10 = hard: 5
-    5
+        attempts: int = 1
 
-    >>> validate_difficulty_integer_range(
-        "Enter the level of difficulty: 1 = easy, 10 = hard: "
-        )
-    Enter the level of difficulty: 1 = easy, 10 = hard: "10"
-    ValueError: invalid literal for int() with base 10: '10'
+        while attempts <= self.max_attempts:
+            player_number: int = self.get_player_number()
 
-    >>> validate_difficulty_integer_range(
-        "Enter the level of difficulty: 1 = easy, 10 = hard: "
-        )
-    Enter the level of difficulty: 1 = easy, 10 = hard: diez
-    ValueError: invalid literal for int() with base 10: 'diez'
+            if self.secret_number > player_number:
+                attempts += 1
+                self.print_feedback(player_number, is_greater=True)
 
-    >>> validate_difficulty_integer_range(
-        "Enter the level of difficulty: 1 = easy, 10 = hard: "
-        )
-    Enter the level of difficulty: 1 = easy, 10 = hard: 20
-    The number must be between 1 and 10.
-    """
-    while True:
-        try:
-            data = int(input("Enter " + message))
-            if data >= 1 and data <= 10:
-                return data
+            elif self.secret_number < player_number:
+                attempts += 1
+                self.print_feedback(player_number, is_greater=False)
+
             else:
-                print("The number must be between 1 and 10.")
-        except ValueError:
-            print("The character must be an integer.")
+                self.print_congratulations()
+                break
 
-        except TypeError as error:
-            print(error)
+        if attempts > self.max_attempts:
+            self.print_loss_message()
 
+    def print_welcome_message(self) -> None:
+        print("Welcome to the game 'Guess the number'... Are you ready?\n")
 
-def validate_integer_type(message):
-    """
-    This function validates the type and range of numbers.
-
-    Parameters:
-    message (str): The message to display to the user.
-
-    Returns:
-    int: The validated number.
-
-    Examples:
-    >>> validate_typ__number(
-        "Enter a number: "
+    def print_instructions(self) -> None:
+        print(
+            f"You must find the secret number between 1 & {self.selected_difficulty_level}.\n"  # noqa
         )
-    Enter a number: 10
-    10
 
-    >>> validate_integer_type(
-        "Enter a number: "
+    def get_player_number(self) -> int:
+        player_number: int = method_with_integer_validation()
+        return player_number
+
+    def print_feedback(self, player_number: int, is_greater: bool) -> None:
+        comparison = "greater" if is_greater else "less"
+        print(f"The number is {comparison} than {player_number}.")
+
+    def print_congratulations(self) -> None:
+        print(
+            f"Congratulations, you guessed the number! (The secret number was {self.secret_number})" # noqa
         )
-    Enter a number: 5
-    5
 
-    >>> validate_integer_type(
-        "Enter a number: "
-        )
-    Enter a number: "10"
-    ValueError: invalid literal for int() with base 10: '10'
-
-    >>> validate_integer_type(
-        "Enter a number: "
-        )
-    Enter a number: diez
-    ValueError: invalid literal for int() with base 10: 'diez'
-    """
-    while True:
-        try:
-            data = int(input("Enter " + message))
-            return data
-        except ValueError:
-            print("The character must be an integer.")
-
-        except TypeError as error:
-            print(error)
+    def print_loss_message(self) -> None:
+        print(f"You lost! The secret number was {self.secret_number}.")
 
 
-def guess_the_number():
-    """
-    This function implements the 'Guess the Number' game.
-
-    The game prompts the user to guess a secret number within
-    a given range of difficulty levels.
-    The user has 5 attempts to guess the number. After each guess,
-    the game provides feedback on whether the secret number is greater
-    or less than the guess.
-    If the user guesses the number correctly within the allowed attempts,
-    they win the game. Otherwise, they lose.
-
-    Parameters:
-    message (str): The message to display to the user.
-
-    Returns:
-    message (str): Response message depending
-    on whether the number is higher or lower,
-    if the user has guessed the number,
-    or if his chances have been exhausted.
-
-    Example:
-    >>> guess_the_number()
-    Welcome to the game 'Guess the number'... Are you ready?
-
-    Enter the level of difficulty: 1 = easy, 10 = hard: 5
-    You must find the secret number between 1 & 50.
-    Guess a number: 25
-    The number is greater than 25.
-    Guess a number: 40
-    The number is less than 40.
-    Guess a number: 35
-    Congratulations, you guessed the number! (The secret number was 35)
-    """
-    print("Welcome to the game 'Guess the number'... Are you ready?\n")
-
-    level_of_difficulty = validate_difficulty_integer_range(
-        "the level of difficulty: 1 = easy, 10 = hard: "
-    )
-
-    selected_difficulty_level = int(f"{level_of_difficulty}0")
-
-    print(
-        "You must find the secret number "
-        f"between 1 & {selected_difficulty_level}."
-    )
-
-    attempts = 1
-    max_attempts = 5
-
-    secret_number = random.randint(1, selected_difficulty_level)
-
-    while attempts <= max_attempts:
-        player_number = validate_integer_type("a number: ")
-
-        if secret_number > player_number:
-            attempts += 1
-            print(f"The number is greater than {player_number}.")
-
-        elif secret_number < player_number:
-            attempts += 1
-            print(f"The number is less than {player_number}.")
-
-        else:
-            print(
-                "Congratulations,you guessed the number !!"
-                f"(The secret number was {secret_number})"
-            )
-            break
-
-    if attempts > 5:
-        print(f"You lost !! The secret number was {secret_number}.")
-
-
-guess_the_number()
+difficulty = method_with_difficulty_validation()
+game = GuessTheNumber(difficulty)
+game.play()
